@@ -1,0 +1,44 @@
+spec_id: SPEC-2026-add_shipping_info
+version: 1.0.0
+status: draft
+owner: Product Analytics Team
+feature_brief_ref: FB-add-shipping-info-tracking
+generated_by: claude-api-agent
+created_at: 2026-01-27
+
+events:
+  - name: add_shipping_info
+    trigger:
+      action: custom
+      selector: "NEEDS_CLARIFICATION: specific button selector for Continue to Payment/Save Shipping"
+      page_path: /checkout/shipping
+    parameters:
+      shipping_tier: "{{DL - shipping_tier}}"
+      value: "{{DL - cart_total}}"
+      currency: "{{DL - currency}}"
+      coupon: "{{DL - coupon_code}}"
+      items: "{{DL - cart_items}}"
+    dataLayer:
+      event: add_shipping_info
+      ecommerce:
+        currency: "{{DL - currency}}"
+        value: "{{DL - cart_total}}"
+        coupon: "{{DL - coupon_code}}"
+        shipping_tier: "{{DL - shipping_tier}}"
+        items: "{{DL - cart_items}}"
+    ga4_mapping:
+      event_name: add_shipping_info
+      custom_dimensions:
+        cd_shipping_tier: "{{DL - shipping_tier}}"
+        cd_coupon_applied: "{{DL - coupon_code}}"
+    gtm_notes: "Fire on successful API response (200) from shipping validation endpoint. Use custom event trigger based on dataLayer push after backend confirmation."
+    pii_risk: true
+    pii_mitigation: "Only capture shipping_tier string - no addresses, names, or contact details"
+
+acceptance_criteria:
+  - "Event fires only after successful API validation response, not on button click"
+  - "shipping_tier parameter populated with selected delivery method"
+  - "items array contains all cart products with required ecommerce fields"
+  - "Event fires for express checkout flows with appropriate shipping_tier value"
+  - "No PII (addresses, names, phone numbers) captured in any parameter"
+  - "Verified in GA4 DebugView with proper ecommerce structure before merge"
