@@ -1,0 +1,29 @@
+spec_id: SPEC-2026-test_checkout_click
+version: 1.0.0
+status: draft
+owner: NEEDS_CLARIFICATION: owner not specified in brief
+feature_brief_ref: NEEDS_CLARIFICATION: feature brief reference not provided
+generated_by: claude-api-agent
+created_at: 2026-01-27T00:00:00Z
+events:
+  - name: test_checkout_click
+    trigger:
+      action: button_click
+      selector: NEEDS_CLARIFICATION: checkout button selector not specified
+      page_path: NEEDS_CLARIFICATION: page path where checkout button appears
+    parameters:
+      button_text: "DL - button_text"
+      page_url: "DL - page_url"
+    dataLayer:
+      event: test_checkout_click
+      event_category: ecommerce
+      event_label: checkout_button
+    ga4_mapping:
+      event_name: test_checkout_click
+      custom_dimensions:
+        cd_button_location: "{{DL - button_text}}"
+    gtm_notes: "Fire on checkout button clicks. Use Click Element trigger."
+    acceptance_criteria:
+      - "Event fires once per checkout button click"
+      - "Event does not fire on page load"
+      - "Verified in GA4 DebugView before deployment"
