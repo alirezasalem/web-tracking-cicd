@@ -1,24 +1,17 @@
 name: Validate dataLayer
 
-# Triggered on every PR to main (full regression), or manually via workflow_dispatch
-# to test a single event against a live URL.
-#
-# PR description convention:
-#   TEST_URL: https://preview.example.com
-#   TEST_USERNAME: staging        (optional)
-#   TEST_PASSWORD: abc123         (optional)
+# Manual trigger only — run via Actions → Validate dataLayer → Run workflow.
+# Used to verify that a live URL emits the expected dataLayer events for a given spec.
+# Typically invoked after a developer has implemented tracking and is ready for QA.
 #
 # Manual run inputs:
-#   test_url      — required
+#   test_url      — required (live URL to test against)
 #   event_name    — optional; if set, only runs playwright-datalayer-tests/[event_name].spec.js
-#   test_username — optional
-#   test_password — optional
+#                   blank = run full regression across all events
+#   test_username — optional (basic auth)
+#   test_password — optional (basic auth)
 
 on:
-  pull_request:
-    branches:
-      - main
-
   workflow_dispatch:
     inputs:
       test_url:
