@@ -3,7 +3,9 @@ name: Generate Spec from Brief
 on:
   push:
     paths:
-      - "feature-briefs/FB-*.md"
+      - "feature-briefs/**.md"
+      - "!feature-briefs/TEMPLATE.md"
+      - "!feature-briefs/README.md"
   workflow_dispatch:
     inputs:
       brief_file:
@@ -44,10 +46,10 @@ jobs:
           if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
             echo "file=${{ inputs.brief_file }}" >> "$GITHUB_OUTPUT"
           else
-            CHANGED=$(git diff --name-only --diff-filter=AM HEAD~1 HEAD -- 'feature-briefs/' | grep '^feature-briefs/FB-.*\.md$' | head -1)
+            CHANGED=$(git diff --name-only --diff-filter=AM HEAD~1 HEAD -- 'feature-briefs/' | grep -E '^feature-briefs/.+\.md$' | grep -vE '^feature-briefs/(TEMPLATE|README)\.md$' | head -1)
             echo "Detected brief file: $CHANGED"
             if [[ -z "$CHANGED" ]]; then
-              echo "ERROR: No FB-*.md brief file detected in this commit"
+              echo "ERROR: No brief file detected in this commit"
               exit 1
             fi
             echo "file=$CHANGED" >> "$GITHUB_OUTPUT"
@@ -58,7 +60,6 @@ jobs:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
           BRIEF_FILE="${{ steps.brief.outputs.file }}"
-          BRIEF_NUM=$(echo "$BRIEF_FILE" | grep -oP '(?<=FB-)\d+')
           YEAR=$(date +%Y)
 
           # Generate to a temp file first
@@ -72,12 +73,13 @@ jobs:
           # Extract first event name from generated YAML
           EVENT_NAME=$(grep -m1 '^\s*- name:' "$TEMP_FILE" | sed 's/.*name:\s*//' | tr -d '"' | tr -d "'" | xargs)
 
-          # Build final filename: SPEC-2026-002-click_outbound_navigation.yaml
-          if [[ -n "$EVENT_NAME" ]]; then
-            SPEC_FILE="specs/SPEC-${YEAR}-$(printf '%03d' $((10#$BRIEF_NUM)))-${EVENT_NAME}.yaml"
-          else
-            SPEC_FILE="specs/SPEC-${YEAR}-$(printf '%03d' $((10#$BRIEF_NUM))).yaml"
+          # Build final filename: SPEC-2026-page_view.yaml
+          if [[ -z "$EVENT_NAME" ]]; then
+            echo "ERROR: Could not extract event_name from generated spec"
+            cat "$TEMP_FILE"
+            exit 1
           fi
+          SPEC_FILE="specs/SPEC-${YEAR}-${EVENT_NAME}.yaml"
 
           mv "$TEMP_FILE" "$SPEC_FILE"
           # Fix spec_id to match actual filename
