@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
     inputs:
       brief_file:
-        description: "Path to feature brief (e.g. feature-briefs/FB-002.md)"
+        description: "Path to feature brief (e.g. feature-briefs/page-view.md)"
         required: true
         type: string
 
@@ -55,6 +55,30 @@ jobs:
             echo "file=$CHANGED" >> "$GITHUB_OUTPUT"
           fi
 
+      - name: Determine target mode
+        id: target
+        run: |
+          # In-place mode: brief came via push to a non-main branch (UI upload).
+          #   -> Commit spec to the SAME branch, comment on the existing PR.
+          # Fallback mode: workflow_dispatch, OR push to main (admin override).
+          #   -> Open a new PR with the spec on a generated branch.
+
+          if [[ "${{ github.event_name }}" == "push" ]]; then
+            REF="${{ github.ref }}"
+            BRANCH="${REF#refs/heads/}"
+            if [[ "$BRANCH" == "main" ]]; then
+              echo "mode=fallback" >> "$GITHUB_OUTPUT"
+              echo "Mode: fallback (push to main)"
+            else
+              echo "mode=in-place" >> "$GITHUB_OUTPUT"
+              echo "branch=$BRANCH" >> "$GITHUB_OUTPUT"
+              echo "Mode: in-place (push to $BRANCH)"
+            fi
+          else
+            echo "mode=fallback" >> "$GITHUB_OUTPUT"
+            echo "Mode: fallback (workflow_dispatch)"
+          fi
+
       - name: Generate spec YAML
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
@@ -91,7 +115,45 @@ jobs:
           echo "Output: $SPEC_FILE"
           echo "spec_file=$SPEC_FILE" >> "$GITHUB_ENV"
 
-      - name: Open PR with generated spec
+      - name: Commit spec to brief branch (in-place mode)
+        if: steps.target.outputs.mode == 'in-place'
+        env:
+          GH_TOKEN: ${{ secrets.PAT_TOKEN }}
+        run: |
+          BRANCH="${{ steps.target.outputs.branch }}"
+          SPEC_FILE="${{ env.spec_file }}"
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add "$SPEC_FILE"
+          git commit -m "feat(spec): auto-generate $SPEC_FILE"
+          git push origin HEAD:"$BRANCH"
+
+          # Find the PR for this branch and post a summary comment
+          PR_NUMBER=$(gh pr list --head "$BRANCH" --json number --jq '.[0].number' 2>/dev/null)
+          if [[ -n "$PR_NUMBER" && "$PR_NUMBER" != "null" ]]; then
+            COMMENT_BODY="## 🤖 Auto-generated spec added
+
+          | Field | Value |
+          |---|---|
+          | Brief | \`${{ steps.brief.outputs.file }}\` |
+          | Spec | \`$SPEC_FILE\` |
+          | Generator | \`claude-api\` |
+          | Status | \`draft\` — awaiting analyst review |
+
+          **Next steps:**
+          1. Review the generated spec for accuracy
+          2. Fill any \`NEEDS_CLARIFICATION\` fields
+          3. Approve and merge — downstream artifacts will generate on main"
+            gh pr comment "$PR_NUMBER" --body "$COMMENT_BODY"
+            echo "Posted spec summary to PR #$PR_NUMBER"
+          else
+            echo "WARNING: No PR found for branch $BRANCH — spec committed but no comment posted"
+          fi
+
+      - name: Open PR with generated spec (fallback mode)
+        if: steps.target.outputs.mode == 'fallback'
         uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -118,13 +180,18 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.PAT_TOKEN }}
         run: |
-          echo "=== Restoring spec file for drift check ==="
           SPEC_FILE="${{ env.spec_file }}"
-          BRANCH="spec/auto-fb-${{ steps.brief.outputs.file }}"
 
-          # Fetch the PR branch and restore the spec file to disk
-          git fetch origin "$BRANCH"
-          git checkout "origin/$BRANCH" -- "$SPEC_FILE"
+          # Determine which branch holds the spec for PR-comment purposes
+          if [[ "${{ steps.target.outputs.mode }}" == "in-place" ]]; then
+            BRANCH="${{ steps.target.outputs.branch }}"
+            echo "=== In-place mode: spec already on branch $BRANCH (on disk now)"
+          else
+            BRANCH="spec/auto-fb-${{ steps.brief.outputs.file }}"
+            echo "=== Fallback mode: restoring spec from $BRANCH"
+            git fetch origin "$BRANCH"
+            git checkout "origin/$BRANCH" -- "$SPEC_FILE"
+          fi
 
           echo "=== Specs on disk ==="
           ls specs/
