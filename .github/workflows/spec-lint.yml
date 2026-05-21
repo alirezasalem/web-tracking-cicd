@@ -1,10 +1,8 @@
 name: Spec Lint
+# Triggered on every PR. Lints all specs in specs/, reporting success even when
+# the diff touches no spec files — required so branch protection always sees a status.
 on:
   pull_request:
-    paths:
-      - "specs/**/*.yaml"
-      - "conventions/conventions.yaml"
-      - "scripts/linter/spec-linter.js"
 jobs:
   lint:
     name: Validate tracking specs
