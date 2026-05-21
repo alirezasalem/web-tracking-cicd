@@ -1,12 +1,11 @@
 name: CI Validate
 
+# Triggered on every push and PR. The linter iterates over all specs in specs/,
+# so it will report green even when the diff touches no spec files — which is the
+# behavior required by branch protection (the check must always report a status).
 on:
   push:
-    paths:
-      - "specs/**/*.yaml"
   pull_request:
-    paths:
-      - "specs/**/*.yaml"
 
 jobs:
   validate:
