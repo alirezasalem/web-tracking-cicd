@@ -78,13 +78,15 @@ function lintSpec(filePath) {
   if (spec.spec_id) {
     const prefix = config.spec.id_prefix;
     const digits = config.spec.sequence_digits;
+    // Sequence number is optional — supports both old SPEC-2026-001-event_name
+    // and new SPEC-2026-event_name formats
     const specIdPattern = new RegExp(
-      `^${prefix}-\\d{4}-\\d{${digits}}(-[a-z][a-z0-9_]*)?$`
+      `^${prefix}-\\d{4}(-\\d{${digits}})?(-[a-z][a-z0-9_]*)?$`
     );
     if (!specIdPattern.test(spec.spec_id)) {
       errors.push(
         `spec_id "${spec.spec_id}" doesn't match expected format. ` +
-        `Example: ${config.spec.id_prefix}-2026-001${config.spec.include_event_slug ? '-event_name' : ''}`
+        `Example: ${config.spec.id_prefix}-2026-event_name (or ${config.spec.id_prefix}-2026-001-event_name)`
       );
     }
   }
