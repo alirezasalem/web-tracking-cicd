@@ -1,6 +1,55 @@
 {
-  "generated_at": "2026-05-21T18:15:46.525Z",
+  "generated_at": "2026-05-22T16:20:01.694Z",
   "generated_by": "agents/schema-guardian/snapshot.js",
   "specs_dir": "specs/",
-  "specs": {}
+  "specs": {
+    "SPEC-2026-001-page_view": {
+      "filename": "SPEC-2026-001-page_view.yaml",
+      "spec_id": "SPEC-2026-001-page_view",
+      "version": "1.0.0",
+      "events": {
+        "page_view": {
+          "parameters": [
+            "device_type",
+            "page_location",
+            "page_referrer",
+            "page_title",
+            "user_id"
+          ],
+          "dataLayer": [
+            "device_type",
+            "event",
+            "event_category",
+            "event_label",
+            "page_location",
+            "page_referrer",
+            "page_title",
+            "user_id"
+          ]
+        }
+      }
+    },
+    "SPEC-2026-002-add_to_cart": {
+      "filename": "SPEC-2026-002-add_to_cart.yaml",
+      "spec_id": "SPEC-2026-002-add_to_cart",
+      "version": "1.0.0",
+      "events": {
+        "add_to_cart": {
+          "parameters": [
+            "currency",
+            "price",
+            "product_category",
+            "product_id",
+            "product_name",
+            "quantity",
+            "variant"
+          ],
+          "dataLayer": [
+            "ecommerce",
+            "event"
+          ]
+        }
+      }
+    }
+  }
 }

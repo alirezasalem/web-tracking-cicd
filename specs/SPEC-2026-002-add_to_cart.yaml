@@ -1,0 +1,51 @@
+spec_id: SPEC-2026-002-add_to_cart
+version: 1.0.0
+status: draft
+owner: Product Analytics Team
+feature_brief_ref: FB-add-to-cart-tracking
+generated_by: claude-api-agent
+created_at: 2026-01-01T00:00:00Z
+title: "Add to Cart Tracking Implementation"
+platform: web
+priority: P0
+
+events:
+  - name: add_to_cart
+    trigger:
+      action: custom
+      selector: ".add-to-cart, [data-action='add-to-cart']"
+      page_path: /products/*
+    parameters:
+      product_id: "{{DL - product_id}}"
+      product_name: "{{DL - product_name}}"
+      price: "{{DL - price}}"
+      quantity: "{{DL - quantity}}"
+      product_category: "{{DL - product_category}}"
+      variant: "{{DL - variant}}"
+      currency: "{{DL - currency}}"
+    dataLayer:
+      event: add_to_cart
+      ecommerce:
+        currency: "{{DL - currency}}"
+        value: "{{DL - price}}"
+        items:
+          - item_id: "{{DL - product_id}}"
+            item_name: "{{DL - product_name}}"
+            item_category: "{{DL - product_category}}"
+            item_variant: "{{DL - variant}}"
+            price: "{{DL - price}}"
+            quantity: "{{DL - quantity}}"
+    ga4_mapping:
+      event_name: add_to_cart
+      custom_dimensions:
+        cd_product_category: "{{DL - product_category}}"
+        cd_variant: "{{DL - variant}}"
+    gtm_notes: "Fire only after successful cart state validation. Use custom event trigger listening for dataLayer push, not direct button click."
+
+acceptance_criteria:
+  - "Event fires only after successful cart state validation, not on button click"
+  - "No duplicate events on rapid button clicks"
+  - "Event does not fire if API returns error or item fails to add"
+  - "Quantity reflects actual amount added, not number of clicks"
+  - "Price is numeric value, currency is ISO code"
+  - "Verified in GA4 DebugView with correct ecommerce structure"
