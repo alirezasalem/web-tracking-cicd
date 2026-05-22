@@ -58,11 +58,6 @@ jobs:
       - name: Determine target mode
         id: target
         run: |
-          # In-place mode: brief came via push to a non-main branch (UI upload).
-          #   -> Commit spec to the SAME branch, comment on the existing PR.
-          # Fallback mode: workflow_dispatch, OR push to main (admin override).
-          #   -> Open a new PR with the spec on a generated branch.
-
           if [[ "${{ github.event_name }}" == "push" ]]; then
             REF="${{ github.ref }}"
             BRANCH="${REF#refs/heads/}"
@@ -79,14 +74,31 @@ jobs:
             echo "Mode: fallback (workflow_dispatch)"
           fi
 
+      - name: Skip if brief already merged to main
+        id: skip_check
+        run: |
+          # When a brief PR is squash-merged, the brief commit lands on main and
+          # re-triggers this workflow in fallback mode. But the spec was already
+          # generated and merged together with the brief — nothing to do.
+          if [[ "${{ steps.target.outputs.mode }}" == "fallback" && "${{ github.event_name }}" == "push" ]]; then
+            REF="${{ github.ref }}"
+            BRANCH="${REF#refs/heads/}"
+            if [[ "$BRANCH" == "main" ]]; then
+              echo "Brief was merged to main — spec already present alongside it. Skipping."
+              echo "skip=true" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+          fi
+          echo "skip=false" >> "$GITHUB_OUTPUT"
+
       - name: Generate spec YAML
+        if: steps.skip_check.outputs.skip != 'true'
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
           BRIEF_FILE="${{ steps.brief.outputs.file }}"
           YEAR=$(date +%Y)
 
-          # Generate to a temp file first
           TEMP_FILE="specs/temp-spec.yaml"
           if ! node agents/spec-generator/run.js --brief-file "$BRIEF_FILE" > "$TEMP_FILE"; then
             echo "--- spec generator failed, file contents ---"
@@ -94,10 +106,8 @@ jobs:
             exit 1
           fi
 
-          # Extract first event name from generated YAML
           EVENT_NAME=$(grep -m1 '^\s*- name:' "$TEMP_FILE" | sed 's/.*name:\s*//' | tr -d '"' | tr -d "'" | xargs)
 
-          # Build final filename: SPEC-2026-page_view.yaml
           if [[ -z "$EVENT_NAME" ]]; then
             echo "ERROR: Could not extract event_name from generated spec"
             cat "$TEMP_FILE"
@@ -106,7 +116,6 @@ jobs:
           SPEC_FILE="specs/SPEC-${YEAR}-${EVENT_NAME}.yaml"
 
           mv "$TEMP_FILE" "$SPEC_FILE"
-          # Fix spec_id to match actual filename
           SPEC_ID="${SPEC_FILE%.yaml}"
           SPEC_ID="${SPEC_ID#specs/}"
           sed -i "s/^spec_id:.*/spec_id: ${SPEC_ID}/" "$SPEC_FILE"
@@ -116,7 +125,7 @@ jobs:
           echo "spec_file=$SPEC_FILE" >> "$GITHUB_ENV"
 
       - name: Commit spec to brief branch (in-place mode)
-        if: steps.target.outputs.mode == 'in-place'
+        if: steps.skip_check.outputs.skip != 'true' && steps.target.outputs.mode == 'in-place'
         env:
           GH_TOKEN: ${{ secrets.PAT_TOKEN }}
         run: |
@@ -130,7 +139,6 @@ jobs:
           git commit -m "feat(spec): auto-generate $SPEC_FILE"
           git push origin HEAD:"$BRANCH"
 
-          # Find the PR for this branch and post a summary comment
           PR_NUMBER=$(gh pr list --head "$BRANCH" --json number --jq '.[0].number' 2>/dev/null)
           if [[ -n "$PR_NUMBER" && "$PR_NUMBER" != "null" ]]; then
             COMMENT_BODY="## 🤖 Auto-generated spec added
@@ -153,7 +161,7 @@ jobs:
           fi
 
       - name: Open PR with generated spec (fallback mode)
-        if: steps.target.outputs.mode == 'fallback'
+        if: steps.skip_check.outputs.skip != 'true' && steps.target.outputs.mode == 'fallback'
         uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -177,12 +185,12 @@ jobs:
           labels: "spec,auto-generated,needs-review"
 
       - name: Run schema drift check
+        if: steps.skip_check.outputs.skip != 'true'
         env:
           GH_TOKEN: ${{ secrets.PAT_TOKEN }}
         run: |
           SPEC_FILE="${{ env.spec_file }}"
 
-          # Determine which branch holds the spec for PR-comment purposes
           if [[ "${{ steps.target.outputs.mode }}" == "in-place" ]]; then
             BRANCH="${{ steps.target.outputs.branch }}"
             echo "=== In-place mode: spec already on branch $BRANCH (on disk now)"
