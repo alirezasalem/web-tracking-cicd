@@ -84,9 +84,22 @@ jobs:
             REF="${{ github.ref }}"
             BRANCH="${REF#refs/heads/}"
             if [[ "$BRANCH" == "main" ]]; then
-              echo "Brief was merged to main — spec already present alongside it. Skipping."
-              echo "skip=true" >> "$GITHUB_OUTPUT"
-              exit 0
+              BRIEF_FILE="${{ steps.brief.outputs.file }}"
+              YEAR=$(date +%Y)
+              EVENT_NAME=$(grep -m1 "^\s*event_name:\|^\s*- name:" "$BRIEF_FILE" | sed "s/.*:\s*//" | tr -d ""'" | xargs 2>/dev/null || echo "")
+              if [[ -n "$EVENT_NAME" ]]; then
+                SPEC_FILE="specs/SPEC-${YEAR}-${EVENT_NAME}.yaml"
+              else
+                SPEC_FILE=""
+              fi
+              if [[ -n "$SPEC_FILE" && -f "$SPEC_FILE" ]]; then
+                echo "Brief merged to main and spec already exists ($SPEC_FILE) — skipping."
+                echo "skip=true" >> "$GITHUB_OUTPUT"
+                exit 0
+              else
+                echo "Brief on main but no spec found — generating spec directly on main."
+                echo "skip=false" >> "$GITHUB_OUTPUT"
+              fi
             fi
           fi
           echo "skip=false" >> "$GITHUB_OUTPUT"
@@ -160,8 +173,19 @@ jobs:
             echo "WARNING: No PR found for branch $BRANCH — spec committed but no comment posted"
           fi
 
-      - name: Open PR with generated spec (fallback mode)
-        if: steps.skip_check.outputs.skip != 'true' && steps.target.outputs.mode == 'fallback'
+      - name: Commit spec to main (brief landed directly on main)
+        if: steps.skip_check.outputs.skip != 'true' && steps.target.outputs.mode == 'fallback' && github.event_name == 'push'
+        run: |
+          SPEC_FILE="${{ env.spec_file }}"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$SPEC_FILE"
+          git commit -m "feat(spec): auto-generate $SPEC_FILE"
+          git push origin HEAD:main
+          echo "Spec committed directly to main alongside brief."
+
+      - name: Open PR with generated spec (workflow_dispatch fallback)
+        if: steps.skip_check.outputs.skip != 'true' && steps.target.outputs.mode == 'fallback' && github.event_name == 'workflow_dispatch'
         uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
