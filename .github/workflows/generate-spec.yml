@@ -86,7 +86,7 @@ jobs:
             if [[ "$BRANCH" == "main" ]]; then
               BRIEF_FILE="${{ steps.brief.outputs.file }}"
               YEAR=$(date +%Y)
-              EVENT_NAME=$(grep -m1 "^\s*event_name:\|^\s*- name:" "$BRIEF_FILE" | sed "s/.*:\s*//" | tr -d ""'" | xargs 2>/dev/null || echo "")
+              EVENT_NAME=$(grep -m1 "^\s*event_name:\|^\s*- name:" "$BRIEF_FILE" | sed "s/.*:\s*//" | tr -d '"' | tr -d "'" | xargs 2>/dev/null || echo "")
               if [[ -n "$EVENT_NAME" ]]; then
                 SPEC_FILE="specs/SPEC-${YEAR}-${EVENT_NAME}.yaml"
               else
