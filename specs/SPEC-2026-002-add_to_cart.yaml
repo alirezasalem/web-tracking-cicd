@@ -28,7 +28,7 @@ events:
       ecommerce:
         currency: "{{DL - currency}}"
         value: "{{DL - price}}"
-        items:
+        products:
           - item_id: "{{DL - product_id}}"
             item_name: "{{DL - product_name}}"
             item_category: "{{DL - product_category}}"
