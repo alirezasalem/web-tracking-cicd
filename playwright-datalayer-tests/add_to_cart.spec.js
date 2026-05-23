@@ -28,7 +28,7 @@ test.describe('add_to_cart', () => {
   });
 
   test('event fires', async () => {
-    expect(eventPayload, 'dataLayer event "add_to_cart" not found').toBeTruthy();
+    expect(eventPayload, 'dataLayer event add_to_cart not found').toBeTruthy();
   });
 
   test('event name is correct', async () => {
@@ -38,11 +38,13 @@ test.describe('add_to_cart', () => {
     ).toBe('add_to_cart');
   });
 
+  // ── ecommerce object tests ──────────────────────────────────────────────────
+
   test('ecommerce object is present', async () => {
     expect(
-      eventPayload.ecommerce !== undefined && eventPayload.ecommerce !== null,
-      `ecommerce object must be present, got ${typeof eventPayload.ecommerce}`
-    ).toBe(true);
+      eventPayload.ecommerce,
+      'ecommerce object is missing from dataLayer event'
+    ).toBeTruthy();
   });
 
   test('ecommerce.currency is a non-empty string', async () => {
@@ -61,95 +63,110 @@ test.describe('add_to_cart', () => {
     ).toBe(true);
   });
 
-  test('ecommerce.items is a non-empty array', async () => {
-    const items = eventPayload.ecommerce?.items;
+  test('ecommerce.products array is present and non-empty', async () => {
+    const products = eventPayload.ecommerce?.products;
     expect(
-      Array.isArray(items) && items.length > 0,
-      `ecommerce.items must be a non-empty array, got ${typeof items} (value: ${JSON.stringify(items)})`
+      Array.isArray(products) && products.length > 0,
+      `ecommerce.products must be a non-empty array, got ${JSON.stringify(products)}`
     ).toBe(true);
   });
 
-  test('ecommerce.items[0].item_id is a non-empty string', async () => {
-    const itemId = eventPayload.ecommerce?.items?.[0]?.item_id;
+  // ── product item tests ──────────────────────────────────────────────────────
+
+  test('product item_id is a non-empty string', async () => {
+    const product = eventPayload.ecommerce?.products?.[0];
+    const itemId = product?.item_id;
     expect(
       typeof itemId === 'string' && itemId.length > 0,
-      `ecommerce.items[0].item_id must be a non-empty string, got ${typeof itemId} (value: ${itemId})`
+      `products[0].item_id must be a non-empty string, got ${typeof itemId} (value: ${itemId})`
     ).toBe(true);
   });
 
-  test('ecommerce.items[0].item_name is a non-empty string', async () => {
-    const itemName = eventPayload.ecommerce?.items?.[0]?.item_name;
+  test('product item_name is a non-empty string', async () => {
+    const product = eventPayload.ecommerce?.products?.[0];
+    const itemName = product?.item_name;
     expect(
       typeof itemName === 'string' && itemName.length > 0,
-      `ecommerce.items[0].item_name must be a non-empty string, got ${typeof itemName} (value: ${itemName})`
+      `products[0].item_name must be a non-empty string, got ${typeof itemName} (value: ${itemName})`
     ).toBe(true);
   });
 
-  test('ecommerce.items[0].item_category is a non-empty string', async () => {
-    const itemCategory = eventPayload.ecommerce?.items?.[0]?.item_category;
+  test('product item_category is a non-empty string', async () => {
+    const product = eventPayload.ecommerce?.products?.[0];
+    const itemCategory = product?.item_category;
     expect(
       typeof itemCategory === 'string' && itemCategory.length > 0,
-      `ecommerce.items[0].item_category must be a non-empty string, got ${typeof itemCategory} (value: ${itemCategory})`
+      `products[0].item_category must be a non-empty string, got ${typeof itemCategory} (value: ${itemCategory})`
     ).toBe(true);
   });
 
-  test('ecommerce.items[0].item_variant is a non-empty string', async () => {
-    const itemVariant = eventPayload.ecommerce?.items?.[0]?.item_variant;
+  test('product item_variant is a non-empty string', async () => {
+    const product = eventPayload.ecommerce?.products?.[0];
+    const itemVariant = product?.item_variant;
     expect(
       typeof itemVariant === 'string' && itemVariant.length > 0,
-      `ecommerce.items[0].item_variant must be a non-empty string, got ${typeof itemVariant} (value: ${itemVariant})`
+      `products[0].item_variant must be a non-empty string, got ${typeof itemVariant} (value: ${itemVariant})`
     ).toBe(true);
   });
 
-  test('ecommerce.items[0].price is a number', async () => {
-    const price = eventPayload.ecommerce?.items?.[0]?.price;
+  test('product price is a number', async () => {
+    const product = eventPayload.ecommerce?.products?.[0];
+    const price = product?.price;
     expect(
       typeof price === 'number' && !isNaN(price),
-      `ecommerce.items[0].price must be a number, got ${typeof price} (value: ${price})`
+      `products[0].price must be a number, got ${typeof price} (value: ${price})`
     ).toBe(true);
   });
 
-  test('ecommerce.items[0].quantity is a number', async () => {
-    const quantity = eventPayload.ecommerce?.items?.[0]?.quantity;
+  test('product quantity is a number', async () => {
+    const product = eventPayload.ecommerce?.products?.[0];
+    const quantity = product?.quantity;
     expect(
       typeof quantity === 'number' && !isNaN(quantity),
-      `ecommerce.items[0].quantity must be a number, got ${typeof quantity} (value: ${quantity})`
+      `products[0].quantity must be a number, got ${typeof quantity} (value: ${quantity})`
     ).toBe(true);
   });
 
-  test('ecommerce.items[0].quantity is a positive integer', async () => {
-    const quantity = eventPayload.ecommerce?.items?.[0]?.quantity;
+  test('product quantity is a positive integer', async () => {
+    const product = eventPayload.ecommerce?.products?.[0];
+    const quantity = product?.quantity;
     expect(
       Number.isInteger(quantity) && quantity > 0,
-      `ecommerce.items[0].quantity must be a positive integer, got ${quantity}`
+      `products[0].quantity must be a positive integer, got ${quantity}`
     ).toBe(true);
   });
 
-  test('ecommerce.items[0].price is non-negative', async () => {
-    const price = eventPayload.ecommerce?.items?.[0]?.price;
+  test('product price is non-negative', async () => {
+    const product = eventPayload.ecommerce?.products?.[0];
+    const price = product?.price;
     expect(
       typeof price === 'number' && price >= 0,
-      `ecommerce.items[0].price must be non-negative, got ${price}`
+      `products[0].price must be non-negative, got ${price}`
     ).toBe(true);
   });
 
-  test('ecommerce.value matches item price times quantity', async () => {
-    const value = eventPayload.ecommerce?.value;
-    const price = eventPayload.ecommerce?.items?.[0]?.price;
-    const quantity = eventPayload.ecommerce?.items?.[0]?.quantity;
-    const expectedValue = price * quantity;
+  // ── business rule: ecommerce.value matches product price * quantity ─────────
+
+  test('ecommerce.value equals product price times quantity', async () => {
+    const ecommerceValue = eventPayload.ecommerce?.value;
+    const product = eventPayload.ecommerce?.products?.[0];
+    const expectedValue = product?.price * product?.quantity;
     expect(
-      Math.abs(value - expectedValue) < 0.01,
-      `ecommerce.value (${value}) should match price (${price}) * quantity (${quantity}) = ${expectedValue}`
+      ecommerceValue === expectedValue,
+      `ecommerce.value (${ecommerceValue}) should equal price * quantity (${expectedValue})`
     ).toBe(true);
   });
 
-  test('ecommerce.currency is a valid ISO 4217 currency code format', async () => {
+  // ── business rule from gtm_notes: fire only after cart state validation ─────
+  // This is validated implicitly by the event appearing in dataLayer after click
+  // The GTM trigger listens for the dataLayer push, not the direct button click
+
+  test('currency follows ISO 4217 format (3 uppercase letters)', async () => {
     const currency = eventPayload.ecommerce?.currency;
-    const isoPattern = /^[A-Z]{3}$/;
+    const iso4217Pattern = /^[A-Z]{3}$/;
     expect(
-      isoPattern.test(currency),
-      `ecommerce.currency must be a valid ISO 4217 currency code (3 uppercase letters), got "${currency}"`
+      iso4217Pattern.test(currency),
+      `ecommerce.currency should be 3 uppercase letters (ISO 4217), got "${currency}"`
     ).toBe(true);
   });
 });
