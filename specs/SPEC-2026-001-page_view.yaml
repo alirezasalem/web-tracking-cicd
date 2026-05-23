@@ -1,0 +1,44 @@
+spec_id: SPEC-2026-001-page_view
+version: 1.0.0
+status: draft
+owner: Product Analytics Team
+feature_brief_ref: FB-page-view-tracking
+generated_by: claude-api-agent
+created_at: 2026-01-27
+
+events:
+  - name: page_view
+    description: "Tracks page views on initial load and SPA navigation"
+    trigger:
+      action: page_load
+      selector: null
+      page_path: "*"
+    parameters:
+      page_location: "DL - page_location"
+      page_referrer: "DL - page_referrer"
+      page_title: "DL - page_title"
+      user_id: "DL - user_id"
+      device_type: "DL - device_type"
+    dataLayer:
+      event: page_view
+      event_category: navigation
+      event_label: "{{DL - page_title}}"
+      page_location: "{{DL - page_location}}"
+      page_referrer: "{{DL - page_referrer}}"
+      page_title: "{{DL - page_title}}"
+      user_id: "{{DL - user_id}}"
+      device_type: "{{DL - device_type}}"
+    ga4_mapping:
+      event_name: page_view
+      custom_dimensions:
+        cd_user_id: "{{DL - user_id}}"
+        cd_device_type: "{{DL - device_type}}"
+    gtm_notes: "Fire on DOM Ready and History Change triggers. Implement PII filtering for page_location parameter."
+
+acceptance_criteria:
+  - "Event fires once per page load and once per SPA route change"
+  - "No double-firing on initial page load with SPA routing"
+  - "PII automatically stripped from page_location query parameters"
+  - "Fragment/anchor changes do not trigger page_view events"
+  - "All parameters populated correctly in GA4 DebugView"
+  - "Device type detection works across desktop, tablet, and mobile"
