@@ -1,33 +1,6 @@
 {
-  "generated_at": "2026-05-19T21:28:19.359Z",
+  "generated_at": "2026-05-23T15:10:22.683Z",
   "generated_by": "agents/schema-guardian/snapshot.js",
   "specs_dir": "specs/",
-  "specs": {
-    "SPEC-2026-001-page_view": {
-      "filename": "SPEC-2026-001-page_view.yaml",
-      "spec_id": "SPEC-2026-001-page_view",
-      "version": "1.0.0",
-      "events": {
-        "page_view": {
-          "parameters": [
-            "device_type",
-            "page_location",
-            "page_referrer",
-            "page_title",
-            "user_id"
-          ],
-          "dataLayer": [
-            "device_type",
-            "event",
-            "event_category",
-            "event_label",
-            "page_location",
-            "page_referrer",
-            "page_title",
-            "user_id"
-          ]
-        }
-      }
-    }
-  }
+  "specs": {}
 }
