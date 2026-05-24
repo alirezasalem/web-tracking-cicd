@@ -42,3 +42,4 @@ Built as a reference implementation for the Senior/Staff Web Analyst role at Vis
 | Self-service platform | Planned |
 
 *Built by Alireza Salem*
+
