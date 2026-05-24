@@ -1,10 +1,6 @@
 name: Spec Lint
 on:
   pull_request:
-    paths:
-      - "specs/**/*.yaml"
-      - "conventions/conventions.yaml"
-      - "scripts/linter/spec-linter.js"
 jobs:
   lint:
     name: Validate tracking specs
@@ -12,14 +8,33 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Detect relevant changes
+        id: changes
+        run: |
+          BASE_SHA="${{ github.event.pull_request.base.sha }}"
+          HEAD_SHA="${{ github.event.pull_request.head.sha }}"
+          CHANGED=$(git diff --name-only "$BASE_SHA" "$HEAD_SHA" | grep -E '^(specs/.*\.yaml|conventions/conventions\.yaml|scripts/linter/spec-linter\.js)$' || true)
+          if [ -z "$CHANGED" ]; then
+            echo "relevant=false" >> "$GITHUB_OUTPUT"
+            echo "✓ No spec/convention/linter changes — skipping lint (reporting success)"
+          else
+            echo "relevant=true" >> "$GITHUB_OUTPUT"
+            echo "Changed files:"
+            echo "$CHANGED"
+          fi
       - name: Setup Node.js
+        if: steps.changes.outputs.relevant == 'true' 
         uses: actions/setup-node@v4
         with:
           node-version: "20"
           cache: "npm"
       - name: Install dependencies
+        if: steps.changes.outputs.relevant == 'true'
         run: npm ci
       - name: Lint all specs in specs/
+        if: steps.changes.outputs.relevant == 'true'
         run: |
           set -e
           FAILED=0
