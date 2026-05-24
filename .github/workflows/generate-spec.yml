@@ -92,7 +92,7 @@ jobs:
       - name: Open PR with generated spec
         uses: peter-evans/create-pull-request@v6
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.WORKFLOW_PAT }}
           branch: "spec/auto-fb-${{ steps.brief.outputs.file }}"
           commit-message: "feat(spec): auto-generate ${{ env.spec_file }}"
           title: "Auto-spec: ${{ env.spec_file }}"
@@ -114,7 +114,7 @@ jobs:
 
       - name: Run schema drift check
         env:
-          GH_TOKEN: ${{ secrets.PAT_TOKEN }}
+          GH_TOKEN: ${{ secrets.WORKFLOW_PAT }}
         run: |
           echo "=== Restoring spec file for drift check ==="
           SPEC_FILE="${{ env.spec_file }}"
