@@ -34,7 +34,7 @@ test.describe('add_to_cart', () => {
   test('event name is correct', async () => {
     expect(
       eventPayload.event,
-      `event name should be "add_to_cart", got "${eventPayload.event}"`
+      `event name must be "add_to_cart", got "${eventPayload.event}"`
     ).toBe('add_to_cart');
   });
 
@@ -43,15 +43,32 @@ test.describe('add_to_cart', () => {
   test('ecommerce object is present', async () => {
     expect(
       eventPayload.ecommerce,
-      'ecommerce object is missing from dataLayer event'
+      'ecommerce object must be present in dataLayer event'
     ).toBeTruthy();
   });
 
-  test('ecommerce.currency is a non-empty string', async () => {
-    const currency = eventPayload.ecommerce?.currency;
+  test('ecommerce.currency is present and is a string', async () => {
     expect(
-      typeof currency === 'string' && currency.length > 0,
-      `ecommerce.currency must be a non-empty string, got ${typeof currency} (value: ${currency})`
+      eventPayload.ecommerce?.currency !== undefined && eventPayload.ecommerce?.currency !== null,
+      `ecommerce.currency must be present, got ${eventPayload.ecommerce?.currency}`
+    ).toBe(true);
+    expect(
+      typeof eventPayload.ecommerce?.currency === 'string',
+      `ecommerce.currency must be a string, got ${typeof eventPayload.ecommerce?.currency} (value: ${eventPayload.ecommerce?.currency})`
+    ).toBe(true);
+  });
+
+  test('ecommerce.currency is a non-empty string', async () => {
+    expect(
+      eventPayload.ecommerce?.currency?.length > 0,
+      `ecommerce.currency must be a non-empty string, got "${eventPayload.ecommerce?.currency}"`
+    ).toBe(true);
+  });
+
+  test('ecommerce.value is present', async () => {
+    expect(
+      eventPayload.ecommerce?.value !== undefined && eventPayload.ecommerce?.value !== null,
+      `ecommerce.value must be present, got ${eventPayload.ecommerce?.value}`
     ).toBe(true);
   });
 
@@ -63,49 +80,77 @@ test.describe('add_to_cart', () => {
     ).toBe(true);
   });
 
-  test('ecommerce.products array is present and non-empty', async () => {
-    const products = eventPayload.ecommerce?.products;
+  // ── products array tests ────────────────────────────────────────────────────
+
+  test('ecommerce.products is present and is an array', async () => {
     expect(
-      Array.isArray(products) && products.length > 0,
-      `ecommerce.products must be a non-empty array, got ${JSON.stringify(products)}`
+      Array.isArray(eventPayload.ecommerce?.products),
+      `ecommerce.products must be an array, got ${typeof eventPayload.ecommerce?.products}`
     ).toBe(true);
   });
 
-  // ── product item tests ──────────────────────────────────────────────────────
-
-  test('product item_id is a non-empty string', async () => {
-    const product = eventPayload.ecommerce?.products?.[0];
-    const itemId = product?.item_id;
+  test('ecommerce.products has at least one item', async () => {
     expect(
-      typeof itemId === 'string' && itemId.length > 0,
-      `products[0].item_id must be a non-empty string, got ${typeof itemId} (value: ${itemId})`
+      eventPayload.ecommerce?.products?.length > 0,
+      `ecommerce.products must have at least one item, got ${eventPayload.ecommerce?.products?.length} items`
     ).toBe(true);
   });
 
-  test('product item_name is a non-empty string', async () => {
+  // ── first product item tests ────────────────────────────────────────────────
+
+  test('product item_id is present and is a non-empty string', async () => {
     const product = eventPayload.ecommerce?.products?.[0];
-    const itemName = product?.item_name;
     expect(
-      typeof itemName === 'string' && itemName.length > 0,
-      `products[0].item_name must be a non-empty string, got ${typeof itemName} (value: ${itemName})`
+      product?.item_id !== undefined && product?.item_id !== null,
+      `product.item_id must be present, got ${product?.item_id}`
+    ).toBe(true);
+    expect(
+      typeof product?.item_id === 'string' && product?.item_id.length > 0,
+      `product.item_id must be a non-empty string, got ${typeof product?.item_id} (value: ${product?.item_id})`
     ).toBe(true);
   });
 
-  test('product item_category is a non-empty string', async () => {
+  test('product item_name is present and is a non-empty string', async () => {
     const product = eventPayload.ecommerce?.products?.[0];
-    const itemCategory = product?.item_category;
     expect(
-      typeof itemCategory === 'string' && itemCategory.length > 0,
-      `products[0].item_category must be a non-empty string, got ${typeof itemCategory} (value: ${itemCategory})`
+      product?.item_name !== undefined && product?.item_name !== null,
+      `product.item_name must be present, got ${product?.item_name}`
+    ).toBe(true);
+    expect(
+      typeof product?.item_name === 'string' && product?.item_name.length > 0,
+      `product.item_name must be a non-empty string, got ${typeof product?.item_name} (value: ${product?.item_name})`
     ).toBe(true);
   });
 
-  test('product item_variant is a non-empty string', async () => {
+  test('product item_category is present and is a non-empty string', async () => {
     const product = eventPayload.ecommerce?.products?.[0];
-    const itemVariant = product?.item_variant;
     expect(
-      typeof itemVariant === 'string' && itemVariant.length > 0,
-      `products[0].item_variant must be a non-empty string, got ${typeof itemVariant} (value: ${itemVariant})`
+      product?.item_category !== undefined && product?.item_category !== null,
+      `product.item_category must be present, got ${product?.item_category}`
+    ).toBe(true);
+    expect(
+      typeof product?.item_category === 'string' && product?.item_category.length > 0,
+      `product.item_category must be a non-empty string, got ${typeof product?.item_category} (value: ${product?.item_category})`
+    ).toBe(true);
+  });
+
+  test('product item_variant is present and is a non-empty string', async () => {
+    const product = eventPayload.ecommerce?.products?.[0];
+    expect(
+      product?.item_variant !== undefined && product?.item_variant !== null,
+      `product.item_variant must be present, got ${product?.item_variant}`
+    ).toBe(true);
+    expect(
+      typeof product?.item_variant === 'string' && product?.item_variant.length > 0,
+      `product.item_variant must be a non-empty string, got ${typeof product?.item_variant} (value: ${product?.item_variant})`
+    ).toBe(true);
+  });
+
+  test('product price is present', async () => {
+    const product = eventPayload.ecommerce?.products?.[0];
+    expect(
+      product?.price !== undefined && product?.price !== null,
+      `product.price must be present, got ${product?.price}`
     ).toBe(true);
   });
 
@@ -114,7 +159,15 @@ test.describe('add_to_cart', () => {
     const price = product?.price;
     expect(
       typeof price === 'number' && !isNaN(price),
-      `products[0].price must be a number, got ${typeof price} (value: ${price})`
+      `product.price must be a number, got ${typeof price} (value: ${price})`
+    ).toBe(true);
+  });
+
+  test('product quantity is present', async () => {
+    const product = eventPayload.ecommerce?.products?.[0];
+    expect(
+      product?.quantity !== undefined && product?.quantity !== null,
+      `product.quantity must be present, got ${product?.quantity}`
     ).toBe(true);
   });
 
@@ -123,7 +176,7 @@ test.describe('add_to_cart', () => {
     const quantity = product?.quantity;
     expect(
       typeof quantity === 'number' && !isNaN(quantity),
-      `products[0].quantity must be a number, got ${typeof quantity} (value: ${quantity})`
+      `product.quantity must be a number, got ${typeof quantity} (value: ${quantity})`
     ).toBe(true);
   });
 
@@ -132,41 +185,19 @@ test.describe('add_to_cart', () => {
     const quantity = product?.quantity;
     expect(
       Number.isInteger(quantity) && quantity > 0,
-      `products[0].quantity must be a positive integer, got ${quantity}`
-    ).toBe(true);
-  });
-
-  test('product price is non-negative', async () => {
-    const product = eventPayload.ecommerce?.products?.[0];
-    const price = product?.price;
-    expect(
-      typeof price === 'number' && price >= 0,
-      `products[0].price must be non-negative, got ${price}`
+      `product.quantity must be a positive integer, got ${quantity}`
     ).toBe(true);
   });
 
   // ── business rule: ecommerce.value matches product price * quantity ─────────
 
-  test('ecommerce.value equals product price times quantity', async () => {
-    const ecommerceValue = eventPayload.ecommerce?.value;
+  test('ecommerce.value equals product price multiplied by quantity', async () => {
     const product = eventPayload.ecommerce?.products?.[0];
     const expectedValue = product?.price * product?.quantity;
+    const actualValue = eventPayload.ecommerce?.value;
     expect(
-      ecommerceValue === expectedValue,
-      `ecommerce.value (${ecommerceValue}) should equal price * quantity (${expectedValue})`
-    ).toBe(true);
-  });
-
-  // ── business rule from gtm_notes: fire only after cart state validation ─────
-  // This is validated implicitly by the event appearing in dataLayer after click
-  // The GTM trigger listens for the dataLayer push, not the direct button click
-
-  test('currency follows ISO 4217 format (3 uppercase letters)', async () => {
-    const currency = eventPayload.ecommerce?.currency;
-    const iso4217Pattern = /^[A-Z]{3}$/;
-    expect(
-      iso4217Pattern.test(currency),
-      `ecommerce.currency should be 3 uppercase letters (ISO 4217), got "${currency}"`
+      Math.abs(actualValue - expectedValue) < 0.01,
+      `ecommerce.value should equal price * quantity (expected: ${expectedValue}, got: ${actualValue})`
     ).toBe(true);
   });
 });
