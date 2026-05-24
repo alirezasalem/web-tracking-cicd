@@ -1,6 +1,6 @@
 {
   "exportFormatVersion": 2,
-  "exportTime": "2026-05-23 19:42:42",
+  "exportTime": "2026-05-24 16:43:28",
   "containerVersion": {
     "path": "accounts/0000000000/containers/000000000/versions/0",
     "accountId": "0000000000",
@@ -15,7 +15,7 @@
       "usageContext": [
         "WEB"
       ],
-      "fingerprint": "1779565362051",
+      "fingerprint": "1779641008265",
       "features": {
         "supportUserPermissions": true,
         "supportEnvironments": true,
@@ -123,7 +123,7 @@
             "value": "G-XXXXXXXXXX"
           }
         ],
-        "fingerprint": "1779565362052",
+        "fingerprint": "1779641008266",
         "firingTriggerId": [
           "101"
         ],
@@ -160,7 +160,7 @@
             ]
           }
         ],
-        "fingerprint": "1779565362051"
+        "fingerprint": "1779641008265"
       }
     ],
     "variable": [
@@ -187,7 +187,7 @@
             "value": "ecommerce"
           }
         ],
-        "fingerprint": "1779565362051",
+        "fingerprint": "1779641008265",
         "formatValue": {}
       },
       {
@@ -213,7 +213,7 @@
             "value": "ecommerce.currency"
           }
         ],
-        "fingerprint": "1779565362052",
+        "fingerprint": "1779641008266",
         "formatValue": {}
       },
       {
@@ -239,7 +239,7 @@
             "value": "ecommerce.value"
           }
         ],
-        "fingerprint": "1779565362053",
+        "fingerprint": "1779641008267",
         "formatValue": {}
       },
       {
@@ -265,7 +265,7 @@
             "value": "ecommerce.products"
           }
         ],
-        "fingerprint": "1779565362054",
+        "fingerprint": "1779641008268",
         "formatValue": {}
       }
     ],
@@ -301,6 +301,6 @@
         "name": "Event"
       }
     ],
-    "fingerprint": "1779565362053"
+    "fingerprint": "1779641008268"
   }
 }
