@@ -10,6 +10,7 @@ on:
 
 jobs:
   validate:
+    name: Lint and validate specs
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
