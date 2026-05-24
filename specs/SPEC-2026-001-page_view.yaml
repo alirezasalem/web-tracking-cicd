@@ -42,3 +42,4 @@ acceptance_criteria:
   - "Fragment/anchor changes do not trigger page_view events"
   - "All parameters populated correctly in GA4 DebugView"
   - "Device type detection works across desktop, tablet, and mobile"
+
