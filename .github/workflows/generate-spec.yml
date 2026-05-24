@@ -2,6 +2,8 @@ name: Generate Spec from Brief
 
 on:
   push:
+    branches:
+      - main
     paths:
       - "feature-briefs/FB-*.md"
   workflow_dispatch:
@@ -89,12 +91,23 @@ jobs:
           echo "Output: $SPEC_FILE"
           echo "spec_file=$SPEC_FILE" >> "$GITHUB_ENV"
 
+      - name: Compute spec branch name
+        id: branch_name
+        run: |
+          # Extract just the filename without path or extension
+          # e.g. feature-briefs/FB-005-page-view-tracking.md -> FB-005-page-view-tracking
+          BRIEF_FILE="${{ steps.brief.outputs.file }}"
+          BRIEF_SLUG=$(basename "$BRIEF_FILE" .md)
+          BRANCH_NAME="auto-spec/${BRIEF_SLUG}"
+          echo "branch=$BRANCH_NAME" >> "$GITHUB_OUTPUT"
+          echo "Computed spec branch name: $BRANCH_NAME"
+
       - name: Open PR with generated spec
         uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ secrets.WORKFLOW_PAT }}
           base: main
-          branch: "spec/auto-fb-${{ steps.brief.outputs.file }}"
+          branch: "${{ steps.branch_name.outputs.branch }}"
           commit-message: "feat(spec): auto-generate ${{ env.spec_file }}"
           title: "Auto-spec: ${{ env.spec_file }}"
           body: |
@@ -119,7 +132,7 @@ jobs:
         run: |
           echo "=== Restoring spec file for drift check ==="
           SPEC_FILE="${{ env.spec_file }}"
-          BRANCH="spec/auto-fb-${{ steps.brief.outputs.file }}"
+          BRANCH="${{ steps.branch_name.outputs.branch }}"
 
           # Fetch the PR branch and restore the spec file to disk
           git fetch origin "$BRANCH"
