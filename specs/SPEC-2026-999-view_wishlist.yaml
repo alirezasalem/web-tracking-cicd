@@ -1,0 +1,34 @@
+spec_id: SPEC-2026-999-view_wishlist
+version: 1.0.0
+status: draft
+owner: NEEDS_CLARIFICATION: owner not specified in brief
+feature_brief_ref: FB-999
+generated_by: claude-api-agent
+created_at: 2026-01-27T10:30:00Z
+events:
+  - name: view_wishlist
+    trigger:
+      action: page_load
+      page_path: /wishlist
+    parameters:
+      user_id: "DL - user_id"
+      wishlist_item_count: "DL - wishlist_item_count"
+      page_path: "DL - page_path"
+    dataLayer:
+      event: view_wishlist
+      event_category: engagement
+      event_label: wishlist
+      user_id: "{{DL - user_id}}"
+      wishlist_item_count: "{{DL - wishlist_item_count}}"
+      page_path: "{{DL - page_path}}"
+    ga4_mapping:
+      event_name: view_wishlist
+      custom_dimensions:
+        cd_user_id: "{{DL - user_id}}"
+        cd_wishlist_item_count: "{{DL - wishlist_item_count}}"
+    gtm_notes: "Fire on page load when user navigates to /wishlist page. Ensure dataLayer variables are populated before trigger fires."
+acceptance_criteria:
+  - "Event fires once per page load on /wishlist URL"
+  - "user_id is populated from authentication state"
+  - "wishlist_item_count reflects actual number of items in user's wishlist"
+  - "Verified in GA4 DebugView before deployment"
