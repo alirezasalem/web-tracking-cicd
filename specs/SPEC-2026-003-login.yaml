@@ -1,0 +1,41 @@
+spec_id: SPEC-2026-003-login
+version: 1.0.0
+status: draft
+owner: Product Analytics Team
+feature_brief_ref: FB-login-tracking
+generated_by: claude-api-agent
+created_at: 2026-01-27
+
+events:
+  - name: login
+    description: "Fires immediately upon successful user authentication"
+    trigger:
+      action: custom
+      selector: "NEEDS_CLARIFICATION: login form selector not specified"
+      page_path: /login
+    parameters:
+      user_id: "DL - user_id"
+      method: "DL - auth_method"
+    dataLayer:
+      event: login
+      event_category: authentication
+      event_label: "{{DL - auth_method}}"
+      user_id: "{{DL - user_id}}"
+      method: "{{DL - auth_method}}"
+    ga4_mapping:
+      event_name: login
+      custom_dimensions:
+        cd_auth_method: "{{DL - auth_method}}"
+        cd_user_id: "{{DL - user_id}}"
+    gtm_notes: "Fire on successful authentication response. Use custom event trigger. Ensure transport beaconing for redirect scenarios."
+    pii_risk: true
+    pii_mitigation: "user_id must be hashed or internal database ID only - never cleartext emails or usernames"
+
+acceptance_criteria:
+  - "Event fires only on successful authentication (API 200 response)"
+  - "Event does not fire on persistent login sessions or auto-login"
+  - "Event fires before page redirect occurs"
+  - "user_id contains only hashed/internal ID, no PII"
+  - "method parameter correctly identifies auth provider (email, google, apple, facebook)"
+  - "Event verified in GA4 DebugView across all login entry points"
+  - "Transport beaconing implemented to handle redirect race conditions"
