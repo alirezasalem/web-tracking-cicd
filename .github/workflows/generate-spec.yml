@@ -93,6 +93,7 @@ jobs:
         uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ secrets.WORKFLOW_PAT }}
+          base: main
           branch: "spec/auto-fb-${{ steps.brief.outputs.file }}"
           commit-message: "feat(spec): auto-generate ${{ env.spec_file }}"
           title: "Auto-spec: ${{ env.spec_file }}"
