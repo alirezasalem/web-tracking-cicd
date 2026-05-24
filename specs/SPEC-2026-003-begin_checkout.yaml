@@ -1,0 +1,40 @@
+spec_id: SPEC-2026-003-begin_checkout
+version: 1.0.0
+status: draft
+owner: Product Analytics Team
+feature_brief_ref: FB-begin-checkout-tracking
+generated_by: claude-api-agent
+created_at: 2026-01-27
+
+events:
+  - name: begin_checkout
+    trigger:
+      action: page_load
+      selector: "NEEDS_CLARIFICATION: specific checkout page element or route"
+      page_path: /checkout
+    parameters:
+      value: "{{DL - cart_total}}"
+      currency: "{{DL - currency}}"
+      coupon: "{{DL - coupon_code}}"
+      checkout_option: "{{DL - checkout_method}}"
+      items: "{{DL - cart_items}}"
+    dataLayer:
+      event: begin_checkout
+      ecommerce:
+        currency: "{{DL - currency}}"
+        value: "{{DL - cart_total}}"
+        coupon: "{{DL - coupon_code}}"
+        items: "{{DL - cart_items}}"
+    ga4_mapping:
+      event_name: begin_checkout
+      custom_dimensions:
+        cd_checkout_option: "{{DL - checkout_method}}"
+        cd_cart_item_count: "{{DL - cart_item_count}}"
+    gtm_notes: "Fire on checkout page initialization. Ensure ecommerce object is cleared before push. Verify cart_items array structure matches GA4 requirements."
+
+acceptance_criteria:
+  - "Event fires once per checkout session initialization"
+  - "Does not fire if cart is empty or contains invalid data"
+  - "Fires only after successful checkout page load, not during login redirects"
+  - "Cart value and items array accurately reflect current cart state"
+  - "Verified in GA4 DebugView with proper ecommerce structure"
