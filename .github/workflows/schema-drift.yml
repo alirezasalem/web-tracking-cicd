@@ -30,6 +30,11 @@ jobs:
           if [ -z "$CHANGED" ]; then
             echo "relevant=false" >> "$GITHUB_OUTPUT"
             echo "✓ No spec changes — skipping drift check (reporting success)"
+            {
+              echo "## ✅ Schema Drift — N/A for this PR"
+              echo ""
+              echo "This PR contains no \`specs/**\` files. Drift detection does not apply to brief-only PRs."
+            } >> "$GITHUB_STEP_SUMMARY"
           else
             echo "relevant=true" >> "$GITHUB_OUTPUT"
             echo "Changed spec files:"
