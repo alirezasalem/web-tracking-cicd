@@ -19,6 +19,11 @@ jobs:
           if [ -z "$CHANGED" ]; then
             echo "relevant=false" >> "$GITHUB_OUTPUT"
             echo "✓ No spec/convention/linter changes — skipping lint (reporting success)"
+            {
+              echo "## ✅ Spec Lint — N/A for this PR"
+              echo ""
+              echo "This PR contains no \`specs/**\`, \`conventions/conventions.yaml\`, or linter-script changes. Spec validation does not apply to brief-only PRs."
+            } >> "$GITHUB_STEP_SUMMARY"
           else
             echo "relevant=true" >> "$GITHUB_OUTPUT"
             echo "Changed files:"
