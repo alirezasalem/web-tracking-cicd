@@ -15,10 +15,6 @@ name: Validate dataLayer
 #   test_password — optional
 
 on:
-  pull_request:
-    branches:
-      - main
-
   workflow_dispatch:
     inputs:
       test_url:
