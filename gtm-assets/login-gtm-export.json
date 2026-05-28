@@ -1,0 +1,306 @@
+{
+  "exportFormatVersion": 2,
+  "exportTime": "2026-05-28 21:38:27",
+  "containerVersion": {
+    "path": "accounts/0000000000/containers/000000000/versions/0",
+    "accountId": "0000000000",
+    "containerId": "000000000",
+    "containerVersionId": "0",
+    "container": {
+      "path": "accounts/0000000000/containers/000000000",
+      "accountId": "0000000000",
+      "containerId": "000000000",
+      "name": "Analytics CI/CD",
+      "publicId": "",
+      "usageContext": [
+        "WEB"
+      ],
+      "fingerprint": "1780004307699",
+      "features": {
+        "supportUserPermissions": true,
+        "supportEnvironments": true,
+        "supportWorkspaces": true,
+        "supportGtagConfigs": false,
+        "supportBuiltInVariables": true,
+        "supportClients": false,
+        "supportFolders": true,
+        "supportTags": true,
+        "supportTemplates": true,
+        "supportTriggers": true,
+        "supportVariables": true,
+        "supportVersions": true,
+        "supportZones": true,
+        "supportTransformations": false
+      }
+    },
+    "tag": [
+      {
+        "accountId": "0000000000",
+        "containerId": "000000000",
+        "tagId": "102",
+        "name": "GA4 - login",
+        "type": "gaawe",
+        "parameter": [
+          {
+            "type": "BOOLEAN",
+            "key": "sendEcommerceData",
+            "value": "false"
+          },
+          {
+            "type": "LIST",
+            "key": "eventSettingsTable",
+            "list": [
+              {
+                "type": "MAP",
+                "map": [
+                  {
+                    "type": "TEMPLATE",
+                    "key": "parameter",
+                    "value": "event_category"
+                  },
+                  {
+                    "type": "TEMPLATE",
+                    "key": "parameterValue",
+                    "value": "{{DLV - event_category}}"
+                  }
+                ]
+              },
+              {
+                "type": "MAP",
+                "map": [
+                  {
+                    "type": "TEMPLATE",
+                    "key": "parameter",
+                    "value": "event_label"
+                  },
+                  {
+                    "type": "TEMPLATE",
+                    "key": "parameterValue",
+                    "value": "{{DLV - event_label}}"
+                  }
+                ]
+              },
+              {
+                "type": "MAP",
+                "map": [
+                  {
+                    "type": "TEMPLATE",
+                    "key": "parameter",
+                    "value": "user_id"
+                  },
+                  {
+                    "type": "TEMPLATE",
+                    "key": "parameterValue",
+                    "value": "{{DLV - user_id}}"
+                  }
+                ]
+              },
+              {
+                "type": "MAP",
+                "map": [
+                  {
+                    "type": "TEMPLATE",
+                    "key": "parameter",
+                    "value": "method"
+                  },
+                  {
+                    "type": "TEMPLATE",
+                    "key": "parameterValue",
+                    "value": "{{DLV - method}}"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "TEMPLATE",
+            "key": "eventName",
+            "value": "login"
+          },
+          {
+            "type": "TEMPLATE",
+            "key": "measurementIdOverride",
+            "value": "G-XXXXXXXXXX"
+          }
+        ],
+        "fingerprint": "1780004307700",
+        "firingTriggerId": [
+          "101"
+        ],
+        "tagFiringOption": "ONCE_PER_EVENT",
+        "monitoringMetadata": {
+          "type": "MAP"
+        },
+        "consentSettings": {
+          "consentStatus": "NOT_SET"
+        }
+      }
+    ],
+    "trigger": [
+      {
+        "accountId": "0000000000",
+        "containerId": "000000000",
+        "triggerId": "101",
+        "name": "Event - login",
+        "type": "CUSTOM_EVENT",
+        "customEventFilter": [
+          {
+            "type": "EQUALS",
+            "parameter": [
+              {
+                "type": "TEMPLATE",
+                "key": "arg0",
+                "value": "{{_event}}"
+              },
+              {
+                "type": "TEMPLATE",
+                "key": "arg1",
+                "value": "login"
+              }
+            ]
+          }
+        ],
+        "fingerprint": "1780004307699"
+      }
+    ],
+    "variable": [
+      {
+        "accountId": "0000000000",
+        "containerId": "000000000",
+        "variableId": "110",
+        "name": "DLV - event_category",
+        "type": "v",
+        "parameter": [
+          {
+            "type": "INTEGER",
+            "key": "dataLayerVersion",
+            "value": "2"
+          },
+          {
+            "type": "BOOLEAN",
+            "key": "setDefaultValue",
+            "value": "false"
+          },
+          {
+            "type": "TEMPLATE",
+            "key": "name",
+            "value": "event_category"
+          }
+        ],
+        "fingerprint": "1780004307699",
+        "formatValue": {}
+      },
+      {
+        "accountId": "0000000000",
+        "containerId": "000000000",
+        "variableId": "111",
+        "name": "DLV - event_label",
+        "type": "v",
+        "parameter": [
+          {
+            "type": "INTEGER",
+            "key": "dataLayerVersion",
+            "value": "2"
+          },
+          {
+            "type": "BOOLEAN",
+            "key": "setDefaultValue",
+            "value": "false"
+          },
+          {
+            "type": "TEMPLATE",
+            "key": "name",
+            "value": "event_label"
+          }
+        ],
+        "fingerprint": "1780004307700",
+        "formatValue": {}
+      },
+      {
+        "accountId": "0000000000",
+        "containerId": "000000000",
+        "variableId": "112",
+        "name": "DLV - user_id",
+        "type": "v",
+        "parameter": [
+          {
+            "type": "INTEGER",
+            "key": "dataLayerVersion",
+            "value": "2"
+          },
+          {
+            "type": "BOOLEAN",
+            "key": "setDefaultValue",
+            "value": "false"
+          },
+          {
+            "type": "TEMPLATE",
+            "key": "name",
+            "value": "user_id"
+          }
+        ],
+        "fingerprint": "1780004307701",
+        "formatValue": {}
+      },
+      {
+        "accountId": "0000000000",
+        "containerId": "000000000",
+        "variableId": "113",
+        "name": "DLV - method",
+        "type": "v",
+        "parameter": [
+          {
+            "type": "INTEGER",
+            "key": "dataLayerVersion",
+            "value": "2"
+          },
+          {
+            "type": "BOOLEAN",
+            "key": "setDefaultValue",
+            "value": "false"
+          },
+          {
+            "type": "TEMPLATE",
+            "key": "name",
+            "value": "method"
+          }
+        ],
+        "fingerprint": "1780004307702",
+        "formatValue": {}
+      }
+    ],
+    "builtInVariable": [
+      {
+        "accountId": "0000000000",
+        "containerId": "000000000",
+        "type": "PAGE_URL",
+        "name": "Page URL"
+      },
+      {
+        "accountId": "0000000000",
+        "containerId": "000000000",
+        "type": "PAGE_HOSTNAME",
+        "name": "Page Hostname"
+      },
+      {
+        "accountId": "0000000000",
+        "containerId": "000000000",
+        "type": "PAGE_PATH",
+        "name": "Page Path"
+      },
+      {
+        "accountId": "0000000000",
+        "containerId": "000000000",
+        "type": "REFERRER",
+        "name": "Referrer"
+      },
+      {
+        "accountId": "0000000000",
+        "containerId": "000000000",
+        "type": "EVENT",
+        "name": "Event"
+      }
+    ],
+    "fingerprint": "1780004307701"
+  }
+}
