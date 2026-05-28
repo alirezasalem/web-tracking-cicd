@@ -1,0 +1,80 @@
+name: Bot Path Guard
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  guard:
+    name: Verify bot wrote only to allowed paths
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Identify commit author
+        id: author
+        run: |
+          AUTHOR_NAME="${{ github.event.head_commit.author.name }}"
+          AUTHOR_EMAIL="${{ github.event.head_commit.author.email }}"
+          echo "Commit author: $AUTHOR_NAME <$AUTHOR_EMAIL>"
+
+          # The app commits as "web-tracking-cicd-bot[bot]" with a noreply email
+          # ending in @users.noreply.github.com. Match conservatively on both.
+          if [[ "$AUTHOR_NAME" == *"web-tracking-cicd-bot"* ]] \
+             || [[ "$AUTHOR_EMAIL" == *"web-tracking-cicd-bot"* ]]; then
+            echo "is_bot=true" >> "$GITHUB_OUTPUT"
+            echo "→ Bot commit detected. Path guard will run."
+          else
+            echo "is_bot=false" >> "$GITHUB_OUTPUT"
+            echo "→ Human commit. Path guard does not apply (humans gated by PR review)."
+          fi
+
+      - name: Checkout (bot commits only)
+        if: steps.author.outputs.is_bot == 'true'
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Verify bot touched only allowed paths
+        if: steps.author.outputs.is_bot == 'true'
+        run: |
+          ALLOWED='^(tracking-concepts/|playwright-datalayer-tests/|gtm-assets/|schema-baseline\.json$)'
+          CHANGED=$(git diff --name-only HEAD~1 HEAD)
+
+          echo "Files changed in this bot commit:"
+          echo "$CHANGED"
+          echo "---"
+
+          BAD=$(echo "$CHANGED" | grep -vE "$ALLOWED" || true)
+
+          if [ -n "$BAD" ]; then
+            echo "::error::❌ Bot pushed to disallowed paths:"
+            echo "$BAD" | while read -r f; do
+              echo "::error file=$f::Bot is not permitted to write to $f"
+            done
+            {
+              echo "## ❌ Path Guard Violation"
+              echo ""
+              echo "The bot committed files outside its allowed scope:"
+              echo ""
+              echo '```'
+              echo "$BAD"
+              echo '```'
+              echo ""
+              echo "**Allowed paths:**"
+              echo "- \`tracking-concepts/\`"
+              echo "- \`playwright-datalayer-tests/\`"
+              echo "- \`gtm-assets/\`"
+              echo "- \`schema-baseline.json\`"
+            } >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+
+          echo "✅ All bot-modified paths are within allowed scope."
+          {
+            echo "## ✅ Path Guard — Passed"
+            echo ""
+            echo "Bot commit touched only allowed artifact paths:"
+            echo '```'
+            echo "$CHANGED"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
