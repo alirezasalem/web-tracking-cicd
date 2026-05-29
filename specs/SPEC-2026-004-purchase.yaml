@@ -23,7 +23,7 @@ events:
       shipping: "DL - shipping"
       currency: "DL - currency"
       coupon: "DL - coupon"
-      items: "DL - items"
+      products: "DL - products"
     dataLayer:
       event: purchase
       ecommerce:
@@ -33,7 +33,7 @@ events:
         shipping: "{{DL - shipping}}"
         currency: "{{DL - currency}}"
         coupon: "{{DL - coupon}}"
-        items: "{{DL - items}}"
+        products: "{{DL - products}}"
     ga4_mapping:
       event_name: purchase
       custom_dimensions:
@@ -43,7 +43,7 @@ events:
 acceptance_criteria:
   - "Event fires only once per transaction_id using deduplication logic"
   - "All revenue values are numeric without currency symbols"
-  - "Items array contains complete product details for each purchased item"
+  - "Produtcrs array contains complete product details for each purchased item"
   - "Event does not fire on page refresh or back button navigation"
   - "Verified in GA4 DebugView with complete ecommerce data structure"
   - "Transaction_id matches backend order confirmation reference"
