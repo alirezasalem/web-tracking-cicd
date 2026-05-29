@@ -1,6 +1,6 @@
 {
   "exportFormatVersion": 2,
-  "exportTime": "2026-05-28 21:58:21",
+  "exportTime": "2026-05-29 16:00:01",
   "containerVersion": {
     "path": "accounts/0000000000/containers/000000000/versions/0",
     "accountId": "0000000000",
@@ -15,7 +15,7 @@
       "usageContext": [
         "WEB"
       ],
-      "fingerprint": "1780005501493",
+      "fingerprint": "1780070401495",
       "features": {
         "supportUserPermissions": true,
         "supportEnvironments": true,
@@ -183,7 +183,7 @@
             "value": "G-XXXXXXXXXX"
           }
         ],
-        "fingerprint": "1780005501494",
+        "fingerprint": "1780070401495",
         "firingTriggerId": [
           "101"
         ],
@@ -220,7 +220,7 @@
             ]
           }
         ],
-        "fingerprint": "1780005501493"
+        "fingerprint": "1780070401494"
       }
     ],
     "variable": [
@@ -247,7 +247,7 @@
             "value": "ecommerce"
           }
         ],
-        "fingerprint": "1780005501493",
+        "fingerprint": "1780070401494",
         "formatValue": {}
       },
       {
@@ -273,7 +273,7 @@
             "value": "ecommerce.transaction_id"
           }
         ],
-        "fingerprint": "1780005501494",
+        "fingerprint": "1780070401495",
         "formatValue": {}
       },
       {
@@ -299,7 +299,7 @@
             "value": "ecommerce.value"
           }
         ],
-        "fingerprint": "1780005501495",
+        "fingerprint": "1780070401496",
         "formatValue": {}
       },
       {
@@ -325,7 +325,7 @@
             "value": "ecommerce.tax"
           }
         ],
-        "fingerprint": "1780005501496",
+        "fingerprint": "1780070401497",
         "formatValue": {}
       },
       {
@@ -351,7 +351,7 @@
             "value": "ecommerce.shipping"
           }
         ],
-        "fingerprint": "1780005501497",
+        "fingerprint": "1780070401498",
         "formatValue": {}
       },
       {
@@ -377,7 +377,7 @@
             "value": "ecommerce.currency"
           }
         ],
-        "fingerprint": "1780005501498",
+        "fingerprint": "1780070401499",
         "formatValue": {}
       },
       {
@@ -403,7 +403,7 @@
             "value": "ecommerce.coupon"
           }
         ],
-        "fingerprint": "1780005501499",
+        "fingerprint": "1780070401500",
         "formatValue": {}
       },
       {
@@ -429,7 +429,7 @@
             "value": "ecommerce.items"
           }
         ],
-        "fingerprint": "1780005501500",
+        "fingerprint": "1780070401501",
         "formatValue": {}
       }
     ],
@@ -465,6 +465,6 @@
         "name": "Event"
       }
     ],
-    "fingerprint": "1780005501495"
+    "fingerprint": "1780070401497"
   }
 }
