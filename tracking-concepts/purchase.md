@@ -42,7 +42,7 @@ dataLayer.push({
     shipping: 9.99,                         // Shipping cost
     currency: "USD",                        // ISO 4217 currency code
     coupon: "SUMMER20",                     // Order-level coupon code (if applied)
-    items: [
+    proucts: [
       {
         item_id: "SKU-8842",
         item_name: "Wireless Bluetooth Headphones",
