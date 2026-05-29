@@ -23,7 +23,7 @@ events:
       shipping: "DL - shipping"
       currency: "DL - currency"
       coupon: "DL - coupon"
-      items: "DL - items"
+      products: "DL - items"
     dataLayer:
       event: purchase
       ecommerce:
