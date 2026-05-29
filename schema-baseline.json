@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-28T21:56:38.188Z",
+  "generated_at": "2026-05-29T15:57:56.361Z",
   "generated_by": "agents/schema-guardian/snapshot.js",
   "specs_dir": "specs/",
   "specs": {
@@ -45,7 +45,9 @@
             "variant"
           ],
           "dataLayer": [
-            "ecommerce",
+            "ecommerce.currency",
+            "ecommerce.products",
+            "ecommerce.value",
             "event"
           ]
         }
@@ -87,7 +89,13 @@
             "value"
           ],
           "dataLayer": [
-            "ecommerce",
+            "ecommerce.coupon",
+            "ecommerce.currency",
+            "ecommerce.items",
+            "ecommerce.shipping",
+            "ecommerce.tax",
+            "ecommerce.transaction_id",
+            "ecommerce.value",
             "event"
           ]
         }
