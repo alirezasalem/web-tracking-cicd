@@ -35,14 +35,37 @@ const BASELINE_PATH = resolve(REPO_ROOT, 'schema-baseline.json');
 
 // ── Helpers (mirrors snapshot.js) ────────────────────────────────────────────
 
+/**
+ * Recursively flattens an object into dot-notation key paths.
+ * - Descends into plain objects
+ * - Treats arrays, strings, numbers, null, booleans as leaves
+ *
+ * Example:
+ *   { event: 'purchase', ecommerce: { items: '...', value: '...' } }
+ *   → ['ecommerce.items', 'ecommerce.value', 'event']
+ */
+function flattenKeys(obj, prefix = '') {
+  if (!obj || typeof obj !== 'object' || Array.isArray(obj)) return [];
+  const keys = [];
+  for (const [k, v] of Object.entries(obj)) {
+    const path = prefix ? `${prefix}.${k}` : k;
+    if (v && typeof v === 'object' && !Array.isArray(v)) {
+      const nested = flattenKeys(v, path);
+      // Empty objects: record the parent path so it doesn't vanish
+      keys.push(...(nested.length ? nested : [path]));
+    } else {
+      keys.push(path);
+    }
+  }
+  return keys.sort();
+}
+
 function extractParamKeys(parameters) {
-  if (!parameters || typeof parameters !== 'object') return [];
-  return Object.keys(parameters).sort();
+  return flattenKeys(parameters);
 }
 
 function extractDataLayerKeys(dataLayer) {
-  if (!dataLayer || typeof dataLayer !== 'object') return [];
-  return Object.keys(dataLayer).sort();
+  return flattenKeys(dataLayer);
 }
 
 function loadCurrentSpecs() {
