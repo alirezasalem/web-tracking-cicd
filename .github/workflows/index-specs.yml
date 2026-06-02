@@ -1,0 +1,70 @@
+name: Index Specs for RAG
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "specs/SPEC-*.yaml"
+  workflow_dispatch:
+    inputs:
+      force:
+        description: "Re-embed all specs even if unchanged (use after index corruption)"
+        required: false
+        default: "false"
+        type: choice
+        options:
+          - "false"
+          - "true"
+
+jobs:
+  index-specs:
+    name: Rebuild spec vector index
+    runs-on: ubuntu-latest
+
+    # Only run when a spec file changed — not on bot commits to avoid loops
+    if: github.actor != 'github-actions[bot]'
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.WORKFLOW_PAT }}
+          fetch-depth: 1
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install spec-generator dependencies
+        working-directory: agents/spec-generator
+        run: npm ci
+
+      - name: Run indexer
+        env:
+          VOYAGE_API_KEY: ${{ secrets.VOYAGE_API_KEY }}
+        run: |
+          FLAGS=""
+          if [[ "${{ inputs.force }}" == "true" ]]; then
+            FLAGS="--force"
+          fi
+          node agents/spec-generator/rag/index.js $FLAGS
+
+      - name: Commit updated index
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          # Only commit if the index actually changed
+          if git diff --quiet data/spec-index.json; then
+            echo "spec-index.json unchanged — nothing to commit"
+            exit 0
+          fi
+
+          git add data/spec-index.json
+          git commit -m "chore(rag): update spec-index.json [skip ci]"
+          git push origin main

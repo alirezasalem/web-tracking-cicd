@@ -5,7 +5,10 @@
   "type": "module",
   "main": "run.js",
   "scripts": {
-    "generate": "node run.js"
+    "generate": "node run.js",
+    "index": "node rag/index.js",
+    "index:force": "node rag/index.js --force",
+    "index:dry": "node rag/index.js --dry-run"
   },
   "dependencies": {
     "yaml": "^2.4.5"

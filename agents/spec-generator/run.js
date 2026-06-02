@@ -20,6 +20,8 @@ import { resolve, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import yaml from 'yaml';
 import { readConventions } from './conventions_reader.js';
+import { querySpecs } from './rag/query.js';
+import { formatRagContext } from './rag/inject.js';
 import {
   config,
   agentModel,
@@ -67,6 +69,19 @@ try {
 
 const conventions = readConventions();
 
+// ── RAG: retrieve similar past specs ─────────────────────────────────────────
+// Query the spec vector index for the 3 most similar past specs.
+// If VOYAGE_API_KEY is not set or the index is empty, this returns '' cleanly.
+console.error('[spec-generator] Querying spec index for similar past specs...');
+const similarSpecs = await querySpecs(briefContent, 3);
+const ragContext   = formatRagContext(similarSpecs);
+
+if (ragContext) {
+  console.error(`[spec-generator] ✓ RAG: injecting ${similarSpecs.length} similar spec(s) into prompt`);
+} else {
+  console.error('[spec-generator] RAG: no similar specs found — generating without examples');
+}
+
 // ── Build the full prompt ─────────────────────────────────────────────────────
 const specIdExample = sequence
   ? buildSpecId(sequence)
@@ -85,9 +100,9 @@ const userMessage = `
 
 ## Naming Conventions (from conventions.yaml)
 
-${conventions}
+${conventions.raw}
 
-## Feature Brief
+${ragContext}## Feature Brief
 
 ${briefContent}
 
