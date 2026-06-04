@@ -1,4 +1,4 @@
-# Analytics CI/CD — Claude Code Instructions
+# Web Tracking CI/CD — Claude Code Instructions
 
 > This file is read automatically by Claude Code when you start a session in this repo.
 > It tells the AI agent how to work correctly within this project's conventions and workflow.

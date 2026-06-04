@@ -1,5 +1,5 @@
 {
-  "name": "analytics-cicd",
+  "name": "web-tracking-cicd",
   "version": "1.0.0",
   "description": "Analytics CI/CD pipeline — spec generation, doc generation, dataLayer validation, GTM config generation",
   "type": "module",

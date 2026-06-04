@@ -1,4 +1,4 @@
-# Analytics CI/CD
+# Web Tracking CI/CD
 
 > An AI-native pipeline for analytics tracking — from product manager brief to validated GTM container in production, with humans reviewing instead of writing.
 

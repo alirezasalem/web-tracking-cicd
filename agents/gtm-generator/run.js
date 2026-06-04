@@ -193,7 +193,7 @@ function buildExport({ eventName, params, measurementId, accountId, containerId,
         path: `accounts/${accountId}/containers/${containerId}`,
         accountId,
         containerId,
-        name:        containerName || 'Analytics CI/CD',
+        name:        containerName || 'Web Tracking CI/CD',
         publicId:    '',
         usageContext: ['WEB'],
         fingerprint: String(Date.now()),
@@ -236,7 +236,7 @@ function main() {
   const config       = loadConfig();
   const measurementId = getMeasurementId(config);
   const { accountId, containerId } = getContainerMeta(config);
-  const containerName = config?.gtm?.container_name || 'Analytics CI/CD';
+  const containerName = config?.gtm?.container_name || 'Web Tracking CI/CD';
 
   console.log(`[gtm-generator] Reading spec: ${specFile}`);
 
