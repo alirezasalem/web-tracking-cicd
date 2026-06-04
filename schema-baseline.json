@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-29T15:57:56.361Z",
+  "generated_at": "2026-06-04T18:45:18.086Z",
   "generated_by": "agents/schema-guardian/snapshot.js",
   "specs_dir": "specs/",
   "specs": {
@@ -98,6 +98,17 @@
             "ecommerce.value",
             "event"
           ]
+        }
+      }
+    },
+    "SPEC-2026-005-remove_from_cart": {
+      "filename": "SPEC-2026-005-remove_from_cart.yaml",
+      "spec_id": "SPEC-2026-005-remove_from_cart",
+      "version": "1.0.0",
+      "events": {
+        "remove_from_cart": {
+          "parameters": [],
+          "dataLayer": []
         }
       }
     }
