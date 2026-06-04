@@ -1,6 +1,6 @@
 # ─────────────────────────────────────────────────────────────────────────────
 # pipeline.config.yaml
-# Analytics CI/CD — Central Pipeline Configuration
+# Web Tracking CI/CD — Central Pipeline Configuration
 #
 # THE SINGLE SOURCE OF TRUTH for all pipeline-level settings.
 #
@@ -21,7 +21,7 @@
 
 meta:
   version: "1.0.0"
-  project: "analytics-cicd"
+  project: "web-tracking-cicd"
   owner: "Web Analytics Team"
 
 

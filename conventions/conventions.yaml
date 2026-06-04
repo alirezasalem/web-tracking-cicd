@@ -1,6 +1,6 @@
 # ─────────────────────────────────────────────────────────────────────────────
 # conventions.yaml
-# Analytics CI/CD — Naming & Structure Conventions
+# Web Tracking CI/CD — Naming & Structure Conventions
 #
 # This file is the single source of truth for all tracking specs in this repo.
 # The spec linter (scripts/linter/spec-linter.js) enforces every rule defined here.
