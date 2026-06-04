@@ -1,0 +1,47 @@
+spec_id: SPEC-2026-005-remove_from_cart
+version: 1.0.0
+status: draft
+owner: NEEDS_CLARIFICATION: team or person accountable for this spec
+feature_brief_ref: FB-005
+generated_by: claude-api-agent
+created_at: 2026-04-17
+updated_at: 2026-04-17
+
+events:
+  - name: remove_from_cart
+    trigger:
+      action: button_click
+      selector: "[data-testid=\"remove-item-btn\"]"
+      page_path: /cart
+    priority: P1
+    parameters:
+      - name: currency
+        type: string
+        required: true
+        example: "USD"
+      - name: value
+        type: currency
+        currency_param: currency
+        required: true
+        example: 29.99
+      - name: items
+        type: array
+        required: true
+        example: 
+          - item_id: "SKU123"
+            item_name: "Sample Product"
+            price: 29.99
+            quantity: 1
+            item_brand: "Brand Name"
+            item_category: "Category"
+      - name: cart_value_before
+        type: currency
+        currency_param: currency
+        required: false
+        example: 89.97
+      - name: cart_value_after
+        type: currency
+        currency_param: currency
+        required: false
+        example: 59.98
+    notes: "Standard GA4 ecommerce event. Must include items array with removed item details. Fire only on complete removal, not quantity decreases. Ensure no duplicate events on rapid clicking."
