@@ -8,6 +8,49 @@
 
 ---
 
+## CI/CD for analytics — what does that even mean?
+
+**CI/CD** stands for **Continuous Integration / Continuous Deployment**. In software engineering it's a well-understood discipline: every time a developer pushes code, an automated pipeline kicks in to test, validate, build, and ship that code to production. The pipeline acts as a safety net — humans propose changes, machines enforce that those changes meet every quality bar before they reach users.
+
+In analytics, this discipline doesn't really exist yet. Most tracking is implemented the same way it was in 2015:
+
+> Someone writes a tracking plan in a Google Doc. An engineer reads it three weeks later, builds something close to it, and ships. An analyst eventually spots in GA4 that the event names don't match, parameter types are wrong, or whole events are missing. By then, weeks of data are already corrupted.
+
+This repository applies the **CI/CD discipline to analytics tracking**. Every tracking change goes through a pipeline: requirement → spec → validation → deployment → monitoring. Every step is automated. Every step has a quality gate. Humans still own the decisions; machines own the execution.
+
+### The two halves explained
+
+| | Software CI/CD | Web Tracking CI/CD (this repo) |
+|---|---|---|
+| **CI — Continuous Integration** | Every code push runs tests and linters to catch bugs early | Every spec PR runs **Spec Lint** and **Schema Drift Detection** to catch bad tracking before it merges |
+| **CD — Continuous Deployment** | Validated code is automatically packaged and shipped to production | Validated specs are automatically turned into **Playwright tests**, **GTM container configs**, and **engineer-facing documentation** — ready to deploy |
+
+### Why this matters
+
+| Problem in traditional analytics | How this pipeline solves it |
+|---|---|
+| Tracking plans live in Google Docs that nobody reads | Specs are committed YAML files — version-controlled, diffable, searchable |
+| Implementation drifts from the plan over time | Schema Drift Detection compares every change against a baseline and flags breaks |
+| Event names collide because nobody checks the existing taxonomy | The spec linter validates every event against `conventions.yaml` — the single source of truth |
+| Each PM writes their tracking plan in a different format | A single Markdown brief format; the AI generates structured specs from it |
+| Engineers wait days for an analyst to write detailed tracking docs | Engineer-facing docs auto-generate the moment a spec merges |
+| GTM containers are configured manually, with copy-paste errors | GTM JSON is auto-generated from the spec and ready to import |
+| QA finds tracking bugs in staging, after the fact | Playwright tests auto-generate from the spec and validate the dataLayer in CI |
+| Two analysts on the same team produce inconsistent specs | RAG retrieves the 3 most similar past specs before each generation, enforcing consistency |
+| Senior analysts spend 60% of their time writing tracking plans | The same analysts spend that time *reviewing* specs and *evolving the system* instead |
+
+### Benefits at a glance
+
+- **Speed** — A new tracking requirement goes from PM brief to mergeable spec in under a minute
+- **Consistency** — Every spec follows the same structure, naming, and validation rules
+- **Auditability** — Every tracking change is a Git commit with a PR history, signed by the author
+- **Quality gates** — Bad specs cannot merge; breaking schema changes are flagged before they ship
+- **Knowledge compounding** — The RAG layer means the system gets smarter the more specs you write
+- **Engineer enablement** — Engineers get exact, machine-validated specifications instead of vague Confluence pages
+- **AI delegation done right** — The AI drafts; humans approve. The AI never has merge authority on its own output
+
+---
+
 ## What this is
 
 A complete, working reference implementation of an **AI-native analytics data lifecycle** — built end-to-end in GitHub.
@@ -26,24 +69,14 @@ A product manager writes a feature brief in plain English and commits it to the 
 
 Nothing in this repo is a mockup. Everything runs in GitHub Actions, every artifact is committed to the repo, and the entire flow is reproducible by forking.
 
----
-
-## Why this exists
-
-Most analytics teams operate the same broken loop:
-
-> PM has a question → analyst writes a tracking plan in a doc → engineer half-implements it → QA misses an edge case → bad data ships → analyst spots it in GA4 three weeks later → blame meeting → repeat.
-
-The promise of AI agents is that this loop can be **inverted**: the human writes the *intent*, the machine writes the *implementation*, and CI guarantees the result matches the spec. The analyst's job moves from "tracking plan author" to "tracking system architect."
-
-This repository is that idea built out in full. It targets the **Senior/Staff Web Analyst** role at Visable, but it stands on its own as a working blueprint for any data team transitioning to an AI-first model.
+This repository was designed against the **Senior/Staff Web Analyst** role at Visable, but stands on its own as a working blueprint for any data team transitioning to an AI-first model.
 
 ---
 
 ## What's inside
 
 ```
-analytics-cicd/
+web-tracking-cicd/
 ├── .github/workflows/    ← 11 GitHub Actions workflows — the orchestration layer
 ├── agents/               ← 4 AI agents: spec, docs, tests, GTM
 ├── conventions/          ← The single source of truth for naming rules
@@ -121,7 +154,7 @@ Set these under **Settings → Secrets and variables → Actions → New reposit
 
 GitHub → **Settings → Developer settings → Personal access tokens → Fine-grained tokens → Generate new token**:
 
-- Repository access: only your forked `analytics-cicd` repo
+- Repository access: only your forked `web-tracking-cicd` repo
 - Expiration: 1 year (set a calendar reminder)
 - Required permissions:
   - **Contents**: Read and write
@@ -157,8 +190,8 @@ Under **Bypass list**, add **your `WORKFLOW_PAT` actor** with bypass mode set to
 The RAG index workflow (`index-specs.yml`) only fires on **new** spec merges. Your forked repo will already contain 5 specs from the original project — but the local `data/spec-index.json` was embedded with the original maintainer's Voyage account. Re-embed with your own key to be safe:
 
 ```bash
-git clone https://github.com/<your-username>/analytics-cicd
-cd analytics-cicd
+git clone https://github.com/<your-username>/web-tracking-cicd
+cd web-tracking-cicd
 cd agents/spec-generator && npm install && cd ../..
 
 export VOYAGE_API_KEY="vk-..."
@@ -290,3 +323,4 @@ Powered by [Claude](https://www.anthropic.com/claude), [Voyage AI](https://www.v
 ## License
 
 MIT — fork it, learn from it, ship it.
+
