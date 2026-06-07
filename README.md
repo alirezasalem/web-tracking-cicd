@@ -1,6 +1,8 @@
+## Notice: Claude Code was heavily utilized in teh development and documentation of this project!
+
 # Web Tracking CI/CD
 
-> An AI-native pipeline for analytics tracking — from product manager brief to validated GTM container in production, with humans reviewing instead of writing.
+> An AI-native pipeline for web tracking — from product manager brief to validated GTM container in production, with humans reviewing instead of writing.
 
 [![Spec Lint](https://img.shields.io/badge/spec--lint-required-blue)](.github/workflows/spec-lint.yml)
 [![Schema Drift](https://img.shields.io/badge/schema--drift-required-blue)](.github/workflows/schema-drift.yml)
@@ -8,15 +10,15 @@
 
 ---
 
-## CI/CD for analytics — what does that even mean?
+## CI/CD for web tracking — what does that even mean?
 
 **CI/CD** stands for **Continuous Integration / Continuous Deployment**. In software engineering it's a well-understood discipline: every time a developer pushes code, an automated pipeline kicks in to test, validate, build, and ship that code to production. The pipeline acts as a safety net — humans propose changes, machines enforce that those changes meet every quality bar before they reach users.
 
-In analytics, this discipline doesn't really exist yet. Most tracking is implemented the same way it was in 2015:
+In web analytics / web tracking, this discipline doesn't really exist yet. Most tracking is implemented the same way it was in 2015:
 
 > Someone writes a tracking plan in a Google Doc. An engineer reads it three weeks later, builds something close to it, and ships. An analyst eventually spots in GA4 that the event names don't match, parameter types are wrong, or whole events are missing. By then, weeks of data are already corrupted.
 
-This repository applies the **CI/CD discipline to analytics tracking**. Every tracking change goes through a pipeline: requirement → spec → validation → deployment → monitoring. Every step is automated. Every step has a quality gate. Humans still own the decisions; machines own the execution.
+This repository applies the **CI/CD discipline to web analytics tracking**. Every tracking change goes through a pipeline: requirement → spec → validation → deployment → monitoring. Every step is automated. Every step has a quality gate. Humans still own the decisions; machines own the execution.
 
 ### The two halves explained
 
@@ -313,8 +315,6 @@ For the full reasoning on any of the above, see the per-folder READMEs.
 ## Credits
 
 Built by [Alireza Salem](https://github.com/alirezasalem).
-
-Designed around the **Senior/Staff Web Analyst** role at [Visable](https://www.visable.com).
 
 Powered by [Claude](https://www.anthropic.com/claude), [Voyage AI](https://www.voyageai.com), and [GitHub Actions](https://github.com/features/actions).
 
