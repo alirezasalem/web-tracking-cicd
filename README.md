@@ -1,4 +1,4 @@
-## Notice: Claude Code was heavily utilized in teh development and documentation of this project!
+## /* Notice: Claude Code was heavily utilized in the development and documentation of this project! */
 
 # Web Tracking CI/CD
 
