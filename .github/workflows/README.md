@@ -1,6 +1,6 @@
 # `.github/workflows/` — The Orchestration Layer
 
-Every workflow in this folder is a small, focused unit of the pipeline. Together they form the **complete automation chain** from a PM's feature brief all the way to a committed GTM container config — with quality gates at every step.
+Every workflow in this folder is a small, focused unit of the pipeline. Together they form the **complete automation chain** from a PM's feature brief all the way to a ready to import GTM container json — with quality gates at every step.
 
 This document explains what each workflow does, when it fires, what secrets it needs, what files it writes, and the design decisions behind it.
 
@@ -47,8 +47,8 @@ The 11 workflows fall into five conceptual groups:
 
 ```
                     ┌─────────────────────────────────────┐
-                    │  PM commits feature-briefs/FB-NNN.md │
-                    │  (via GitHub web UI — no Git needed) │
+                    │  PM commits feature-briefs/FB-NNN.md│
+                    │  (via GitHub web UI — no Git needed)│
                     └──────────────────┬──────────────────┘
                                        │ PR opened
                                        │
@@ -71,7 +71,7 @@ The 11 workflows fall into five conceptual groups:
                                        │ analyst reviews + merges spec PR
                                        ▼
         ┌──────────────────────────────┴──────────────────────────────┐
-        │                                                              │
+        │                                                             │
         ▼                                                              ▼
   ┌────────────────┐                                            ┌──────────────┐
   │ Bot Path Guard │                                            │ Update       │
