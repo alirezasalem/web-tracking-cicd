@@ -104,7 +104,7 @@ feature_briefs:
 # 5. AI AGENT SETTINGS
 # ─────────────────────────────────────────────────────────────────────────────
 agent:
-  model: "claude-sonnet-5-20260514"
+  model: "claude-sonnet-5"
   max_tokens: 4096
   temperature: 0                # 0 = deterministic; best for structured YAML output
 
